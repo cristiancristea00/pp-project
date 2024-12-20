@@ -1,8 +1,6 @@
-#include <iostream>
 #include <string>
 
-#include "TricornGenerator.cuh"
-#include "Utils.cuh"
+#include "CosineGenerator.cuh"
 
 
 auto main(int const argc, char * argv[]) -> int
@@ -15,11 +13,11 @@ auto main(int const argc, char * argv[]) -> int
 
     std::size_t const maxIterations{std::stoul(argv[PARAM_MAX_ITERATIONS])};
 
-    Tricorn::GeneratorConstruct(imageSize, maxIterations);
-    Tricorn::Render();
-    Tricorn::Retrieve();
-    Tricorn::Save();
-    Tricorn::GeneratorDestruct();
+    Cosine::GeneratorConstruct(imageSize);
+    Cosine::Render(maxIterations);
+    Cosine::Retrieve();
+    Cosine::Save();
+    Cosine::GeneratorDestruct();
 
     return EXIT_SUCCESS;
 }

@@ -1,8 +1,6 @@
-#include <iostream>
 #include <string>
 
-#include "JuliaGenerator.cuh"
-#include "Utils.cuh"
+#include "TricornGenerator.cuh"
 
 
 auto main(int const argc, char * argv[]) -> int
@@ -15,11 +13,11 @@ auto main(int const argc, char * argv[]) -> int
 
     std::size_t const maxIterations{std::stoul(argv[PARAM_MAX_ITERATIONS])};
 
-    Julia::GeneratorConstruct(imageSize, maxIterations);
-    Julia::Render();
-    Julia::Retrieve();
-    Julia::Save();
-    Julia::GeneratorDestruct();
+    Tricorn::GeneratorConstruct(imageSize);
+    Tricorn::Render(maxIterations);
+    Tricorn::Retrieve();
+    Tricorn::Save();
+    Tricorn::GeneratorDestruct();
 
     return EXIT_SUCCESS;
 }

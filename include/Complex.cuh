@@ -1,5 +1,9 @@
 #pragma once
 
+#include <concepts>
+
+#include <cuda_runtime_api.h>
+
 
 template <std::floating_point T>
 struct Complex

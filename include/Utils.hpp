@@ -1,9 +1,6 @@
 #pragma once
 
-#include <cuda_runtime_api.h>
-
 #include <cstdint>
-#include <functional>
 
 #include "Complex.cuh"
 
@@ -33,4 +30,4 @@ struct Size
     std::size_t height;
 };
 
-__host__ auto CheckParameters(int argc, char * argv[]) -> void;
+auto CheckParameters(int argc, char * argv[]) -> void;

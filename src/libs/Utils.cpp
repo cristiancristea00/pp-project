@@ -1,9 +1,9 @@
-#include "Utils.cuh"
+#include "Utils.hpp"
 
 #include <iostream>
 
 
-__host__ auto CheckParameters(int const argc, char * argv[]) -> void
+auto CheckParameters(int const argc, char * argv[]) -> void
 {
     if (argc != ARGS_COUNT)
     {

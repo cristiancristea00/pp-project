@@ -1,8 +1,6 @@
-#include <iostream>
 #include <string>
 
-#include "CosineGenerator.cuh"
-#include "Utils.cuh"
+#include "MandelbrotGenerator.cuh"
 
 
 auto main(int const argc, char * argv[]) -> int
@@ -15,11 +13,11 @@ auto main(int const argc, char * argv[]) -> int
 
     std::size_t const maxIterations{std::stoul(argv[PARAM_MAX_ITERATIONS])};
 
-    Cosine::GeneratorConstruct(imageSize, maxIterations);
-    Cosine::Render();
-    Cosine::Retrieve();
-    Cosine::Save();
-    Cosine::GeneratorDestruct();
+    Mandelbrot::GeneratorConstruct(imageSize);
+    Mandelbrot::Render(maxIterations);
+    Mandelbrot::Retrieve();
+    Mandelbrot::Save();
+    Mandelbrot::GeneratorDestruct();
 
     return EXIT_SUCCESS;
 }

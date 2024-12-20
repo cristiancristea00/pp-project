@@ -4,15 +4,16 @@
 
 #include <opencv2/opencv.hpp>
 
+
 namespace Fractal
 {
-    static const dim3 BLOCK_SIZE{32U, 32U};
+    static constexpr auto CHANNELS{3U};
+
+    static constexpr dim3 BLOCK_SIZE{32U, 32U};
 
     static constexpr float MAX_COLOR{255.0F};
 
     static Size imageSize{0U, 0U};
-    static std::size_t maxIterations{0U};
-    static float logMaxIterations{0.0F};
 
     static bool isRendered{false};
 
@@ -45,19 +46,17 @@ namespace Fractal
     __device__ __forceinline__ static auto GenerateCosinePixel(Point startPoint, std::size_t iterations, float logIterations, float radiusSquared) -> std::uint8_t;
 
 
-    __host__ auto GeneratorConstruct(Size const & size, std::size_t const iterations) -> void
+    __host__ auto GeneratorConstruct(Size const & size) -> void
     {
-        if (auto const result{cudaMalloc(&deviceImage, size.width * size.height * sizeof(std::uint8_t))}; cudaSuccess != result)
+        if (auto const result{cudaMalloc(&deviceImage, size.width * size.height * CHANNELS * sizeof(std::uint8_t))}; cudaSuccess != result)
         {
             std::cerr << "Error allocating memory for Mandelbrot image: " << cudaGetErrorString(result) << '\n';
             std::exit(EXIT_FAILURE);
         }
 
-        hostImage.resize(size.width * size.height);
+        hostImage.resize(size.width * size.height * CHANNELS);
 
         imageSize = size;
-        maxIterations = iterations;
-        logMaxIterations = std::log(iterations);
     }
 
     __host__ auto GeneratorDestruct() -> void
@@ -71,32 +70,31 @@ namespace Fractal
 
         imageSize = {0U, 0U};
 
-        maxIterations = 0U;
-        logMaxIterations = 0.0F;
+        cudaDeviceReset();
     }
 
-    __host__ auto Render(Type const type, Point const topLeft, Point const bottomRight, float const radiusSquared) -> void
+    __host__ auto Render(Type const type, Point const topLeft, Point const bottomRight, float const radiusSquared, std::size_t const iterations) -> void
     {
         static const dim3 GRID_SIZE{
             static_cast<uint32_t>((imageSize.width + BLOCK_SIZE.x - 1U) / BLOCK_SIZE.x),
             static_cast<uint32_t>((imageSize.height + BLOCK_SIZE.y - 1U) / BLOCK_SIZE.y)
         };
 
-        std::cout << "Generating " << TypeToString(type) << " fractal image with size " << imageSize.width << "×" << imageSize.height << " using " << maxIterations << " iterations...\n";
+        auto const logMaxIterations{std::log(static_cast<float>(iterations))};
 
         switch (type)
         {
             case Type::MANDELBROT :
-                MandelbrotKernel<<<GRID_SIZE, BLOCK_SIZE>>>(deviceImage, imageSize, maxIterations, logMaxIterations, topLeft, bottomRight, radiusSquared);
+                MandelbrotKernel<<<GRID_SIZE, BLOCK_SIZE>>>(deviceImage, imageSize, iterations, logMaxIterations, topLeft, bottomRight, radiusSquared);
                 break;
             case Type::JULIA :
-                JuliaKernel<<<GRID_SIZE, BLOCK_SIZE>>>(deviceImage, imageSize, maxIterations, logMaxIterations, topLeft, bottomRight, radiusSquared);
+                JuliaKernel<<<GRID_SIZE, BLOCK_SIZE>>>(deviceImage, imageSize, iterations, logMaxIterations, topLeft, bottomRight, radiusSquared);
                 break;
             case Type::TRICORN :
-                TricornKernel<<<GRID_SIZE, BLOCK_SIZE>>>(deviceImage, imageSize, maxIterations, logMaxIterations, topLeft, bottomRight, radiusSquared);
+                TricornKernel<<<GRID_SIZE, BLOCK_SIZE>>>(deviceImage, imageSize, iterations, logMaxIterations, topLeft, bottomRight, radiusSquared);
                 break;
             case Type::COSINE :
-                CosineKernel<<<GRID_SIZE, BLOCK_SIZE>>>(deviceImage, imageSize, maxIterations, logMaxIterations, topLeft, bottomRight, radiusSquared);
+                CosineKernel<<<GRID_SIZE, BLOCK_SIZE>>>(deviceImage, imageSize, iterations, logMaxIterations, topLeft, bottomRight, radiusSquared);
                 break;
             default :
                 std::cerr << "Unknown fractal type.\n";
@@ -119,6 +117,16 @@ namespace Fractal
         isRendered = true;
     }
 
+    __host__ auto GetImage() -> std::uint8_t const *
+    {
+        if (!isRendered)
+        {
+            throw std::runtime_error("The fractal has not been rendered yet.");
+        }
+
+        return hostImage.data();
+    }
+
     __host__ auto Save(std::string_view const & filename) -> void
     {
         using namespace cv;
@@ -137,7 +145,6 @@ namespace Fractal
     __host__ __forceinline__ static auto CleanUp() -> void
     {
         GeneratorDestruct();
-        cudaDeviceReset();
         std::exit(EXIT_FAILURE);
     }
 
@@ -145,16 +152,16 @@ namespace Fractal
     {
         switch (type)
         {
-            case Type::MANDELBROT :
+            case MANDELBROT :
                 return "Mandelbrot";
-            case Type::JULIA :
+            case JULIA :
                 return "Julia";
-            case Type::TRICORN :
+            case TRICORN :
                 return "Tricorn";
-            case Type::COSINE :
+            case COSINE :
                 return "Cosine";
             default :
-                return "Unknown";
+                throw std::runtime_error("Unknown fractal type.");
         }
     }
 
@@ -179,7 +186,9 @@ namespace Fractal
         {
             auto const point = PixelToPoint({col, row}, size, topLeft, bottomRight);
             auto const value = GenerateMandelbrotPixel(point, iterations, logIterations, radiusSquared);
-            image[(row * size.width) + col] = value;
+            image[(row * size.width + col) * CHANNELS + 0] = value;
+            image[(row * size.width + col) * CHANNELS + 1] = value;
+            image[(row * size.width + col) * CHANNELS + 2] = value;
         }
     }
 
@@ -210,7 +219,9 @@ namespace Fractal
         {
             auto const point = PixelToPoint({col, row}, size, topLeft, bottomRight);
             auto const value = GenerateJuliaPixel(point, iterations, logIterations, radiusSquared);
-            image[(row * size.width) + col] = value;
+            image[(row * size.width + col) * CHANNELS + 0] = value;
+            image[(row * size.width + col) * CHANNELS + 1] = value;
+            image[(row * size.width + col) * CHANNELS + 2] = value;
         }
     }
 
@@ -243,7 +254,9 @@ namespace Fractal
         {
             auto const point = PixelToPoint({col, row}, size, topLeft, bottomRight);
             auto const value = GenerateTricornPixel(point, iterations, logIterations, radiusSquared);
-            image[(row * size.width) + col] = value;
+            image[(row * size.width + col) * CHANNELS + 0] = value;
+            image[(row * size.width + col) * CHANNELS + 1] = value;
+            image[(row * size.width + col) * CHANNELS + 2] = value;
         }
     }
 
@@ -275,7 +288,9 @@ namespace Fractal
         {
             auto const point = PixelToPoint({col, row}, size, topLeft, bottomRight);
             auto const value = GenerateCosinePixel(point, iterations, logIterations, radiusSquared);
-            image[(row * size.width) + col] = value;
+            image[(row * size.width + col) * CHANNELS + 0] = value;
+            image[(row * size.width + col) * CHANNELS + 1] = value;
+            image[(row * size.width + col) * CHANNELS + 2] = value;
         }
     }
 

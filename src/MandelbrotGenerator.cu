@@ -13,9 +13,9 @@ namespace Mandelbrot
     static constexpr Point BOTTOM_RIGHT{1.0F, -1.2F};
 
 
-    __host__ auto GeneratorConstruct(Size const & size, std::size_t const iterations) -> void
+    __host__ auto GeneratorConstruct(Size const & size) -> void
     {
-        Fractal::GeneratorConstruct(size, iterations);
+        Fractal::GeneratorConstruct(size);
     }
 
     __host__ auto GeneratorDestruct() -> void
@@ -23,14 +23,19 @@ namespace Mandelbrot
         Fractal::GeneratorDestruct();
     }
 
-    __host__ auto Render() -> void
+    __host__ auto Render(std::size_t const iterations) -> void
     {
-        Fractal::Render(Fractal::Type::MANDELBROT, TOP_LEFT, BOTTOM_RIGHT, RADIUS_SQUARED);
+        Fractal::Render(Fractal::Type::MANDELBROT, TOP_LEFT, BOTTOM_RIGHT, RADIUS_SQUARED, iterations);
     }
 
     __host__ auto Retrieve() -> void
     {
         Fractal::Retrieve();
+    }
+
+    __host__ auto GetImage() -> std::uint8_t const *
+    {
+        return Fractal::GetImage();
     }
 
     __host__ auto Save() -> void
