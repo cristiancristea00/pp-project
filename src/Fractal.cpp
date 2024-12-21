@@ -47,7 +47,7 @@ int main()
     std::println("GLSL Version: {}", reinterpret_cast<char const *>(glGetString(GL_SHADING_LANGUAGE_VERSION)));
     std::println("Renderer (GPU): {}", reinterpret_cast<char const *>(glGetString(GL_RENDERER)));
     std::println("Vendor: {}", reinterpret_cast<char const *>(glGetString(GL_VENDOR)));
-    std::println("Resolution: {}x{}", width, height);
+    std::println("Resolution: {}×{}", width, height);
 
     glfwSetKeyCallback(window, KeyCallback);
 
