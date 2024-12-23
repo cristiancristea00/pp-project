@@ -138,9 +138,9 @@ namespace Fractal
             throw std::runtime_error("The fractal has not been rendered yet.");
         }
 
-        Mat const image(static_cast<int>(imageSize.height), static_cast<int>(imageSize.width), CV_8UC3, hostImage.data());
-        Mat const imageBGR(image.size(), CV_8UC3);
-        cvtColor(image, imageBGR, COLOR_RGB2BGR);
+        Mat const imageRGB{static_cast<int>(imageSize.height), static_cast<int>(imageSize.width), CV_8UC3, hostImage.data()};
+        Mat const imageBGR{imageRGB.size(), CV_8UC3};
+        cvtColor(imageRGB, imageBGR, COLOR_RGB2BGR);
         imwrite(filename.data(), imageBGR);
     }
 

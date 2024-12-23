@@ -30,4 +30,4 @@ struct Size
     std::size_t height;
 };
 
-auto CheckParameters(int argc, char * argv[]) -> void;
+auto CheckParameters(int argc, char const * const argv[]) -> void;

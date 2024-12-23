@@ -1,9 +1,9 @@
 #include <string>
 
-#include "JuliaGenerator.cuh"
+#include "MandelbrotGenerator.cuh"
 
 
-auto main(int const argc, char * argv[]) -> int
+auto main(int const argc, char const * const argv[]) -> int
 {
     CheckParameters(argc, argv);
 
@@ -13,11 +13,11 @@ auto main(int const argc, char * argv[]) -> int
 
     std::size_t const maxIterations{std::stoul(argv[PARAM_MAX_ITERATIONS])};
 
-    Julia::GeneratorConstruct(imageSize);
-    Julia::Render(maxIterations);
-    Julia::Retrieve();
-    Julia::Save();
-    Julia::GeneratorDestruct();
+    Mandelbrot::GeneratorConstruct(imageSize);
+    Mandelbrot::Render(maxIterations);
+    Mandelbrot::Retrieve();
+    Mandelbrot::Save();
+    Mandelbrot::GeneratorDestruct();
 
     return EXIT_SUCCESS;
 }

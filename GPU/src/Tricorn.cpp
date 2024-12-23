@@ -1,9 +1,9 @@
 #include <string>
 
-#include "CosineGenerator.cuh"
+#include "TricornGenerator.cuh"
 
 
-auto main(int const argc, char * argv[]) -> int
+auto main(int const argc, char const * const argv[]) -> int
 {
     CheckParameters(argc, argv);
 
@@ -13,11 +13,11 @@ auto main(int const argc, char * argv[]) -> int
 
     std::size_t const maxIterations{std::stoul(argv[PARAM_MAX_ITERATIONS])};
 
-    Cosine::GeneratorConstruct(imageSize);
-    Cosine::Render(maxIterations);
-    Cosine::Retrieve();
-    Cosine::Save();
-    Cosine::GeneratorDestruct();
+    Tricorn::GeneratorConstruct(imageSize);
+    Tricorn::Render(maxIterations);
+    Tricorn::Retrieve();
+    Tricorn::Save();
+    Tricorn::GeneratorDestruct();
 
     return EXIT_SUCCESS;
 }

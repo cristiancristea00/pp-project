@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
-project("Fractal Generator" LANGUAGES CUDA CXX C VERSION 1.0.0)
+project("GPU Fractal Generator" DESCRIPTION "Fractal Generator on GPUs using CUDA" LANGUAGES CUDA CXX C)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_C_STANDARD 11)
@@ -8,11 +8,11 @@ set(CMAKE_CUDA_STANDARD 20)
 set(CMAKE_COLOR_DIAGNOSTICS ON)
 
 if(MSCV_IDE OR MSVC)
-    set(DEBUG_FLAGS "/Od /arch:AVX2 /fp:fast /EHsc /Zi")
     set(RELEASE_FLAGS "/Ot /arch:AVX2 /fp:fast /EHsc /Zi")
+    set(DEBUG_FLAGS "/Od /arch:AVX2 /fp:fast /EHsc /Zi")
 else()
-    set(DEBUG_FLAGS "-O0 -march=native -mtune=native -pipe -fno-builtin -g  -Wall -Wextra -fsanitize=undefined,leak")
-    set(RELEASE_FLAGS "-O3 -march=native -mtune=native -pipe -fno-builtin -g")
+    set(RELEASE_FLAGS "-O3 -ffast-math -march=native -mtune=native -pipe -fno-builtin -g")
+    set(DEBUG_FLAGS "-O0 -march=native -mtune=native -pipe -fno-builtin -g -Wall -Wextra -fno-omit-frame-pointer -fsanitize=undefined,leak")
 endif()
 
 set(CMAKE_CUDA_FLAGS_RELEASE ${RELEASE_FLAGS})

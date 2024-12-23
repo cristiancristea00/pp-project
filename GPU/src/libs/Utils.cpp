@@ -3,7 +3,7 @@
 #include <iostream>
 
 
-auto CheckParameters(int const argc, char * argv[]) -> void
+auto CheckParameters(int const argc, char const * const argv[]) -> void
 {
     if (argc != ARGS_COUNT)
     {
