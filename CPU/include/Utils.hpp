@@ -10,12 +10,10 @@
 
 enum Arguments : std::uint8_t
 {
-    NAME           = 0x00,
-    WIDTH          = 0x01,
-    HEIGHT         = 0x02,
-    MAX_ITERATIONS = 0x03,
-    GRAINSIZE_ROW  = 0x04,
-    GRAINSIZE_COL  = 0x05,
+    PARAM_NAME           = 0x00,
+    PARAM_WIDTH          = 0x01,
+    PARAM_HEIGHT         = 0x02,
+    PARAM_MAX_ITERATIONS = 0x03,
 };
 
 using Point = std::complex<float>;

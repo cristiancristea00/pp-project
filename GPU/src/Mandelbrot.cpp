@@ -14,8 +14,18 @@ auto main(int const argc, char const * const argv[]) -> int
     std::size_t const maxIterations{std::stoul(argv[PARAM_MAX_ITERATIONS])};
 
     Mandelbrot::GeneratorConstruct(imageSize);
-    Mandelbrot::Render(maxIterations);
-    Mandelbrot::Retrieve();
+    TestSpeed(
+        [&maxIterations]() -> void
+        {
+            Mandelbrot::Render(maxIterations);
+        }, "Mandelbrot fractal generation"
+    );
+    TestSpeed(
+        []() -> void
+        {
+            Mandelbrot::Retrieve();
+        }, "Mandelbrot fractal retrieval"
+    );
     Mandelbrot::Save();
     Mandelbrot::GeneratorDestruct();
 

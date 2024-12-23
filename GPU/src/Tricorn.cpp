@@ -14,8 +14,18 @@ auto main(int const argc, char const * const argv[]) -> int
     std::size_t const maxIterations{std::stoul(argv[PARAM_MAX_ITERATIONS])};
 
     Tricorn::GeneratorConstruct(imageSize);
-    Tricorn::Render(maxIterations);
-    Tricorn::Retrieve();
+    TestSpeed(
+        [&maxIterations]() -> void
+        {
+            Tricorn::Render(maxIterations);
+        }, "Tricorn fractal generation"
+    );
+    TestSpeed(
+        []() -> void
+        {
+            Tricorn::Retrieve();
+        }, "Tricorn fractal retrieval"
+    );
     Tricorn::Save();
     Tricorn::GeneratorDestruct();
 

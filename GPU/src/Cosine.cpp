@@ -14,8 +14,18 @@ auto main(int const argc, char const * const argv[]) -> int
     std::size_t const maxIterations{std::stoul(argv[PARAM_MAX_ITERATIONS])};
 
     Cosine::GeneratorConstruct(imageSize);
-    Cosine::Render(maxIterations);
-    Cosine::Retrieve();
+    TestSpeed(
+        [&maxIterations]() -> void
+        {
+            Cosine::Render(maxIterations);
+        }, "Cosine fractal generation"
+    );
+    TestSpeed(
+        []() -> void
+        {
+            Cosine::Retrieve();
+        }, "Cosine fractal retrieval"
+    );
     Cosine::Save();
     Cosine::GeneratorDestruct();
 

@@ -14,8 +14,18 @@ auto main(int const argc, char const * const argv[]) -> int
     std::size_t const maxIterations{std::stoul(argv[PARAM_MAX_ITERATIONS])};
 
     Julia::GeneratorConstruct(imageSize);
-    Julia::Render(maxIterations);
-    Julia::Retrieve();
+    TestSpeed(
+        [&maxIterations]() -> void
+        {
+            Julia::Render(maxIterations);
+        }, "Julia fractal generation"
+    );
+    TestSpeed(
+        []() -> void
+        {
+            Julia::Retrieve();
+        }, "Julia fractal retrieval"
+    );
     Julia::Save();
     Julia::GeneratorDestruct();
 

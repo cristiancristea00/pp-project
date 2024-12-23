@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstdint>
+#include <functional>
+#include <string_view>
 
 #include "Complex.cuh"
 
@@ -31,3 +33,5 @@ struct Size
 };
 
 auto CheckParameters(int argc, char const * const argv[]) -> void;
+
+auto TestSpeed(std::function<void()> const & function, std::string_view message) -> void;

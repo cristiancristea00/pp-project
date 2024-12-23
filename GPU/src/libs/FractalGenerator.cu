@@ -25,7 +25,7 @@ namespace Fractal
 
     __device__ __forceinline__ static auto PixelToPoint(Pixel pixel, Size size, Point topLeft, Point bottomRight) -> Point;
 
-    __device__ __forceinline__ static auto Colorize(std::uint8_t * red, std::uint8_t * green, std::uint8_t * blue, std::uint8_t value) -> void;
+    __device__ __forceinline__ static auto Colorize(std::uint8_t * __restrict__ red, std::uint8_t * __restrict__ green, std::uint8_t * __restrict__ blue, std::uint8_t value) -> void;
 
 
     __global__ static auto MandelbrotKernel(std::uint8_t * image, Size size, std::size_t iterations, float logIterations, Point topLeft, Point bottomRight, float radiusSquared) -> void;
@@ -178,7 +178,7 @@ namespace Fractal
         return {real, imag};
     }
 
-    __device__ __forceinline__ static auto Colorize(std::uint8_t * const red, std::uint8_t * const green, std::uint8_t * const blue, std::uint8_t const value) -> void
+    __device__ __forceinline__ static auto Colorize(std::uint8_t * __restrict__ const red, std::uint8_t * __restrict__ const green, std::uint8_t * __restrict__ const blue, std::uint8_t const value) -> void
     {
         __device__ __constant__ static constexpr float RED[] = {
             0.001462F, 0.002258F, 0.003279F, 0.004512F, 0.005950F, 0.007588F, 0.009426F, 0.011465F, 0.013708F, 0.016156F, 0.018815F, 0.021692F, 0.024792F, 0.028123F, 0.031696F, 0.035520F,

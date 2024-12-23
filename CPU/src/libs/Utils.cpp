@@ -8,7 +8,7 @@ auto CheckParameters(int const argc, char const * const argv[]) -> void
 {
     if (argc != ARGS_COUNT)
     {
-        std::println(stderr, "Usage: {} <width> <height> <max_iterations>", argv[NAME]);
+        std::println(stderr, "Usage: {} <width> <height> <max_iterations>", argv[PARAM_NAME]);
 
         std::exit(EXIT_FAILURE);
     }
