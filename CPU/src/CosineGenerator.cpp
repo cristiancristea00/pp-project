@@ -14,14 +14,8 @@ auto CosineGenerator::Generate(Point const & startPoint) const -> std::uint8_t
             return static_cast<std::uint8_t>(MAX_COLOR * std::log(iteration + 1) / logMaxIterations);
         }
 
-        point = cosine(point) + startPoint;
+        point = std::cos(point) + startPoint;
     }
 
     return 0;
-}
-
-template <std::floating_point T>
-constexpr auto CosineGenerator::cosine(std::complex<T> const & value) -> std::complex<T>
-{
-    return {std::cos(value.real()) * std::cosh(value.imag()), -std::sin(value.real()) * std::sinh(value.imag())};
 }
