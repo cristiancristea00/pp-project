@@ -1,4 +1,4 @@
-#include <string>
+#include <print>
 
 #include "CosineGenerator.cuh"
 
@@ -12,6 +12,8 @@ auto main(int const argc, char const * const argv[]) -> int
     Size const imageSize{imageWidth, imageHeight};
 
     std::size_t const maxIterations{std::stoul(argv[PARAM_MAX_ITERATIONS])};
+
+    std::println("Generating Cosine fractal image with size {}×{} using {} iterations", imageWidth, imageHeight, maxIterations);
 
     Cosine::GeneratorConstruct(imageSize);
     TestSpeed(
